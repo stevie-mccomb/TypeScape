@@ -1,6 +1,5 @@
 import State from 'States/State';
 import GameObject from 'GameObjects/GameObject';
-import ReadingState from 'States/ReadingState';
 import StateMachine from 'Machines/StateMachine';
 
 class PlayState extends State
