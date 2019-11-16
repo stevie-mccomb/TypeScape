@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "es6",
+        "target": "es5",
+        "outDir": "./resources/js"
+    },
+    "include": [
+        "./resources/ts/**/*.ts",
+        "./resources/ts/**/*.tsx",
+    ]
+}
