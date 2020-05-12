@@ -1,4 +1,6 @@
 import { Mouse, MouseButton } from 'Interfaces/Mouse';
+import GameObject from 'GameObjects/GameObject';
+import Stage from 'Stage';
 
 class Controller
 {
@@ -8,6 +10,8 @@ class Controller
     private keys: number[] = [];
     private onKeydownBound: EventListener = this.onKeydown.bind(this);
     private onKeyupBound: EventListener = this.onKeyup.bind(this);
+    private onClickBound: EventListener = this.onClick.bind(this);
+    private onMousemoveBound: EventListener = this.onMousemove.bind(this);
     private onMousedownBound: EventListener = this.onMousedown.bind(this);
     private onMouseupBound: EventListener = this.onMouseup.bind(this);
     private onGamepadConnectedBound: EventListener = this.onGamepadConnected.bind(this);
@@ -19,8 +23,10 @@ class Controller
 
         document.addEventListener('keydown', this.onKeydownBound);
         document.addEventListener('keyup', this.onKeyupBound);
-        document.addEventListener('mousedown', this.onMousedownBound);
-        document.addEventListener('mouseup', this.onMouseupBound);
+        Stage.instance.element.addEventListener('click', this.onClickBound);
+        Stage.instance.element.addEventListener('mousemove', this.onMousemoveBound);
+        Stage.instance.element.addEventListener('mousedown', this.onMousedownBound);
+        Stage.instance.element.addEventListener('mouseup', this.onMouseupBound);
 
         window.addEventListener('gamepadconnected', this.onGamepadConnectedBound);
         window.addEventListener('gamepaddisconnected', this.onGamepadDisconnectedBound);
@@ -30,8 +36,10 @@ class Controller
     {
         document.removeEventListener('keydown', this.onKeydownBound);
         document.removeEventListener('keyup', this.onKeyupBound);
-        document.removeEventListener('mousedown', this.onMousedownBound);
-        document.removeEventListener('mouseup', this.onMouseupBound);
+        Stage.instance.element.removeEventListener('click', this.onClickBound);
+        Stage.instance.element.removeEventListener('mousemove', this.onMousemoveBound);
+        Stage.instance.element.removeEventListener('mousedown', this.onMousedownBound);
+        Stage.instance.element.removeEventListener('mouseup', this.onMouseupBound);
 
         window.removeEventListener('gamepadconnected', this.onGamepadConnectedBound);
         window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnectedBound);
@@ -59,6 +67,25 @@ class Controller
         let index: number = this.keys.indexOf(e.keyCode);
 
         if (index >= 0) this.keys.splice(index, 1);
+    }
+
+    onClick(e): void
+    {
+        GameObject.sortByZ();
+
+        for (let gameObject of GameObject.instances) {
+            if (gameObject.isUnder(this.mouse.x, this.mouse.y)) {
+                return gameObject.onClick(e);
+            }
+        }
+    }
+
+    onMousemove(e): void
+    {
+        let scale = Stage.instance.width / Stage.instance.element.offsetWidth;
+
+        this.mouse.x = e.offsetX * scale;
+        this.mouse.y = e.offsetY * scale;
     }
 
     onMousedown(e)

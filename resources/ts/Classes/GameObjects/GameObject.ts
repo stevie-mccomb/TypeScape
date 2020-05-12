@@ -8,6 +8,7 @@ abstract class GameObject
 
     public x: number = 0;
     public y: number = 0;
+    public z: number = 0;
     protected _width: number = 0;
     protected _height: number = 0;
     protected _interactable: boolean = false;
@@ -77,6 +78,34 @@ abstract class GameObject
         }
 
         return '';
+    }
+
+    onClick(e)
+    {
+        //
+    }
+
+    onMousedown(e)
+    {
+        //
+    }
+
+    onMouseup(e)
+    {
+        //
+    }
+
+    isUnder(vector: Vector): boolean
+    {
+        return (
+            vector.x >= this.left
+                &&
+            vector.x <= this.right
+                &&
+            vector.y >= this.top
+                &&
+            vector.y <= this.bottom
+        );
     }
 
     get width(): number
@@ -187,15 +216,41 @@ abstract class GameObject
         this.y = value - (this.height / 2);
     }
 
-    static atVector(vector: Vector): GameObject
+    get vector(): Vector
     {
-        for (let instance of GameObject.instances) {
+        return {
+            x: this.x,
+            y: this.y
+        };
+    }
+
+    static atVector(vector: Vector, not: GameObject[] = null): GameObject
+    {
+        GameObject.sortByZ();
+
+        for (let i = GameObject.instances.length - 1; i >= 0; --i) {
+            let instance = GameObject.instances[i];
+            if (not.indexOf(instance) >= 0) continue;
             if (vector.x >= instance.left && vector.x <= instance.right && vector.y >= instance.top && vector.y <= instance.bottom) {
                 return instance;
             }
         }
 
         return null;
+    }
+
+    static get highest(): GameObject
+    {
+        let highest = {z: 0} as GameObject;
+        for (let gameObject of GameObject.instances) {
+            if (!highest.z || gameObject.z > highest.z) highest = gameObject;
+        }
+        return highest;
+    }
+
+    static sortByZ(): GameObject[]
+    {
+        return GameObject.instances.sort((a, b) => a.z - b.z);
     }
 }
 
