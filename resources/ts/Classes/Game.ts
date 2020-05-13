@@ -19,8 +19,8 @@ class Game
         this.element.className = 'game';
         document.body.appendChild(this.element);
 
-        new Controller();
         new Stage();
+        new Controller();
         new MasterMachine();
 
         this.animationFrame = requestAnimationFrame(this.loopBound);

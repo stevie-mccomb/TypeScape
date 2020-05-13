@@ -74,7 +74,7 @@ class Controller
         GameObject.sortByZ();
 
         for (let gameObject of GameObject.instances) {
-            if (gameObject.isUnder(this.mouse.x, this.mouse.y)) {
+            if (gameObject.isUnder(this.mouse)) {
                 return gameObject.onClick(e);
             }
         }
