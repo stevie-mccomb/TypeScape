@@ -2,9 +2,9 @@ import State from 'States/State';
 import GameObject from 'GameObjects/GameObject';
 import StateMachine from 'Machines/StateMachine';
 
-class PlayState extends State
+export default class PlayState extends State
 {
-    static instance: PlayState;
+    private static _instance: PlayState;
 
     public machine: StateMachine = new StateMachine();
 
@@ -12,28 +12,31 @@ class PlayState extends State
     {
         super();
 
-        PlayState.instance = this;
+        PlayState._instance = this;
     }
 
-    enter(data: object = {})
+    public enter(data: object = {}): void
     {
         //
     }
 
-    update()
+    public update(): void
     {
         for (let go of GameObject.instances) go.update();
     }
 
-    render()
+    public render(): void
     {
         for (let go of GameObject.instances) go.render();
     }
 
-    exit()
+    public exit(): void
     {
         //
     }
-}
 
-export default PlayState;
+    public static get instance(): PlayState
+    {
+        return PlayState._instance;
+    }
+}

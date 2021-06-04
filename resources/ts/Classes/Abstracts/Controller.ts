@@ -1,10 +1,11 @@
 import { Mouse, MouseButton } from 'Interfaces/Mouse';
 import GameObject from 'GameObjects/GameObject';
 import Stage from 'Stage';
+import Vector from 'Abstracts/Vector';
 
-class Controller
+export default class Controller
 {
-    static instance: Controller;
+    private static _instance: Controller;
 
     private _mouse: Mouse = { x: 0, y: 0, buttons: [ { index: 0, name: 'left', down: false } ] };
     private keys: number[] = [];
@@ -19,7 +20,7 @@ class Controller
 
     constructor()
     {
-        Controller.instance = this;
+        Controller._instance = this;
 
         document.addEventListener('keydown', this.onKeydownBound);
         document.addEventListener('keyup', this.onKeyupBound);
@@ -32,7 +33,7 @@ class Controller
         window.addEventListener('gamepaddisconnected', this.onGamepadDisconnectedBound);
     }
 
-    destroy()
+    public destroy(): void
     {
         document.removeEventListener('keydown', this.onKeydownBound);
         document.removeEventListener('keyup', this.onKeyupBound);
@@ -45,42 +46,40 @@ class Controller
         window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnectedBound);
     }
 
-    onGamepadConnected()
+    private onGamepadConnected(): void
     {
         //
     }
 
-    onGamepadDisconnected()
+    private onGamepadDisconnected(): void
     {
         //
     }
 
-    onKeydown(e)
+    private onKeydown(e: KeyboardEvent): void
     {
-        let index: number = this.keys.indexOf(e.keyCode);
-
+        const index: number = this.keys.indexOf(e.keyCode);
         if (index < 0) this.keys.push(e.keyCode);
     }
 
-    onKeyup(e)
+    private onKeyup(e: KeyboardEvent): void
     {
-        let index: number = this.keys.indexOf(e.keyCode);
-
+        const index: number = this.keys.indexOf(e.keyCode);
         if (index >= 0) this.keys.splice(index, 1);
     }
 
-    onClick(e): void
+    private onClick(e: MouseEvent): void
     {
         GameObject.sortByZ();
 
         for (let gameObject of GameObject.instances) {
-            if (gameObject.isUnder(this.mouse)) {
+            if (gameObject.isUnder(new Vector(this.mouse.x, this.mouse.y))) {
                 return gameObject.onClick(e);
             }
         }
     }
 
-    onMousemove(e): void
+    private onMousemove(e: MouseEvent): void
     {
         let scale = Stage.instance.width / Stage.instance.element.offsetWidth;
 
@@ -88,22 +87,22 @@ class Controller
         this.mouse.y = e.offsetY * scale;
     }
 
-    onMousedown(e)
+    private onMousedown(e: MouseEvent): void
     {
         this.mouse.buttons[0].down = true;
     }
 
-    onMouseup(e)
+    private onMouseup(e: MouseEvent): void
     {
         this.mouse.buttons[0].down = false;
     }
 
-    keyIsDown(keyCode: number)
+    public keyIsDown(keyCode: number)
     {
         return this.keys.indexOf(keyCode) >= 0;
     }
 
-    buttonIsDown(button)
+    public buttonIsDown(button: string): boolean
     {
         let gamepads = navigator.getGamepads();
         if (!gamepads || !gamepads.length || !gamepads[0]) return false;
@@ -111,16 +110,16 @@ class Controller
         return gamepads[0].buttons[button].pressed;
     }
 
-    vibrate(options: object = { startDelay: 0, duration: 500, weakMagnitude: 0.5, strongMagnitude: 0.5 })
+    public vibrate(options: object = { startDelay: 0, duration: 500, weakMagnitude: 0.5, strongMagnitude: 0.5 }): void
     {
-        let gamepads = navigator.getGamepads();
-        if (!gamepads || !gamepads.length || !gamepads[0]) return false;
+        const gamepads = navigator.getGamepads();
+        if (!gamepads || !gamepads.length || !gamepads[0]) return;
 
         // @ts-ignore: GamepadActuator is not recognized by the typescript interpreter, but works in Chrome, which is the only intended build platform.
         navigator.getGamepads()[0].vibrationActuator.playEffect('dual-rumble', options);
     }
 
-    get axes(): readonly number[]
+    public get axes(): readonly number[]
     {
         let gamepads = navigator.getGamepads();
         if (!gamepads || !gamepads.length || !gamepads[0]) return [0, 0, 0, 0];
@@ -128,7 +127,7 @@ class Controller
         return gamepads[0].axes;
     }
 
-    get buttons(): readonly GamepadButton[]
+    public get buttons(): readonly GamepadButton[]
     {
         let gamepads = navigator.getGamepads();
         if (!gamepads || !gamepads.length || !gamepads[0]) return [];
@@ -136,10 +135,13 @@ class Controller
         return gamepads[0].buttons;
     }
 
-    get mouse(): Mouse
+    public get mouse(): Mouse
     {
         return this._mouse;
     }
-}
 
-export default Controller;
+    public static get instance(): Controller
+    {
+        return Controller._instance;
+    }
+}

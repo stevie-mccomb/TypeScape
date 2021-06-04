@@ -1,27 +1,30 @@
 import PlayState from 'States/PlayState';
 import StateMachine from 'Machines/StateMachine';
 
-class MasterMachine extends StateMachine
+export default class MasterMachine extends StateMachine
 {
-    public static instance: MasterMachine;
+    private static _instance: MasterMachine;
 
     constructor()
     {
         super();
 
-        if (MasterMachine.instance) MasterMachine.instance.destroy();
-        MasterMachine.instance = this;
+        if (MasterMachine._instance) MasterMachine._instance.destroy();
+        MasterMachine._instance = this;
 
         this.register('play', new PlayState);
         this.change('play');
     }
 
-    destroy()
+    public destroy(): void
     {
         super.destroy();
 
-        MasterMachine.instance = undefined;
+        MasterMachine._instance = undefined;
+    }
+
+    public static get instance(): MasterMachine
+    {
+        return MasterMachine._instance;
     }
 }
-
-export default MasterMachine;

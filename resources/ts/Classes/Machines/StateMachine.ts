@@ -1,25 +1,24 @@
 import State from 'States/State';
 
-class StateMachine
+export default class StateMachine
 {
-    static instances: StateMachine[] = [];
+    private static _instances: StateMachine[] = [];
 
     private _state: string = '';
     private states: Object = {};
 
     constructor()
     {
-        StateMachine.instances.push(this);
+        StateMachine._instances.push(this);
     }
 
-    register(name, state)
+    public register(name: string, state: State): void
     {
-        if (this.states[name]) throw new Error(`A state with name "${name}" has already been registered to this state machine.`);
-
+        if (!!this.states[name]) throw new Error(`A state with name "${name}" has already been registered to this state machine.`);
         this.states[name] = state;
     }
 
-    change(name, data: object = {})
+    public change(name: string, data: object = {}): void
     {
         if (this.state) this.state.exit();
 
@@ -28,31 +27,34 @@ class StateMachine
         this.state.enter(data);
     }
 
-    update()
+    public update(): void
     {
         if (this.state) this.state.update();
     }
 
-    render()
+    public render(): void
     {
         if (this.state) this.state.render();
     }
 
-    destroy()
+    public destroy(): void
     {
-        let index = StateMachine.instances.indexOf(this);
-        if (index >= 0) StateMachine.instances.splice(index, 1);
+        let index = StateMachine._instances.indexOf(this);
+        if (index >= 0) StateMachine._instances.splice(index, 1);
     }
 
-    get state(): State
+    public get state(): State
     {
         return this.states[this._state]
     }
 
-    get stateName(): string
+    public get stateName(): string
     {
         return this._state;
     }
-}
 
-export default StateMachine;
+    public static get instances(): StateMachine[]
+    {
+        return StateMachine._instances;
+    }
+}

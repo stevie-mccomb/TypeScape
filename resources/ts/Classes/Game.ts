@@ -3,21 +3,21 @@ import MasterMachine from 'Machines/MasterMachine';
 import Stage from 'Stage';
 import Time from 'Abstracts/Time';
 
-class Game
+export default class Game
 {
-    static instance: Game;
+    private static _instance: Game;
 
-    element: HTMLDivElement = document.createElement('div');
-    animationFrame: number = 0;
-    loopBound: FrameRequestCallback = this.loop.bind(this);
+    private _element: HTMLDivElement = document.createElement('div');
+    private animationFrame: number = 0;
+    private loopBound: FrameRequestCallback = this.loop.bind(this);
 
     constructor()
     {
-        if (Game.instance) Game.instance.destroy();
-        Game.instance = this;
+        if (Game._instance) Game._instance.destroy();
+        Game._instance = this;
 
-        this.element.className = 'game';
-        document.body.appendChild(this.element);
+        this._element.className = 'game';
+        document.body.appendChild(this._element);
 
         new Stage();
         new Controller();
@@ -26,9 +26,9 @@ class Game
         this.animationFrame = requestAnimationFrame(this.loopBound);
     }
 
-    loop(timestamp: number)
+    public loop(timestamp: number): void
     {
-        Time.delta = (timestamp - Time.lastUpdated) / 100;
+        Time.delta = timestamp - Time.lastUpdated;
 
         this.update();
         this.render();
@@ -38,24 +38,32 @@ class Game
         this.animationFrame = requestAnimationFrame(this.loopBound);
     }
 
-    update()
+    public update(): void
     {
         Stage.instance.update();
         MasterMachine.instance.update();
     }
 
-    render()
+    public render(): void
     {
         Stage.instance.render();
         MasterMachine.instance.render();
     }
 
-    destroy()
+    public destroy(): void
     {
-        this.element.parentNode.removeChild(this.element);
+        this._element.parentNode.removeChild(this._element);
 
-        Game.instance = undefined;
+        Game._instance = undefined;
+    }
+
+    public get element(): HTMLDivElement
+    {
+        return this._element;
+    }
+
+    public static get instance(): Game
+    {
+        return Game._instance;
     }
 }
-
-export default Game;

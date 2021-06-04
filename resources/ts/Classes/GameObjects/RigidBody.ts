@@ -1,8 +1,8 @@
 import GameObject from 'GameObjects/GameObject';
 
-class RigidBody extends GameObject
+export default class RigidBody extends GameObject
 {
-    static instances: RigidBody[] = [];
+    protected static _instances: RigidBody[] = [];
 
     protected fixed: boolean = false;
 
@@ -10,19 +10,19 @@ class RigidBody extends GameObject
     {
         super(x, y, width, height);
 
-        RigidBody.instances.push(this);
+        RigidBody._instances.push(this);
     }
 
-    update()
+    public update(): void
     {
         super.update();
 
-        for (let otherBody of RigidBody.instances) {
+        for (const otherBody of RigidBody.instances) {
             if (otherBody === this) continue;
 
-            let bodyToMove = this.fixed ? otherBody : this;
-            let bodyToReference = this.fixed ? this : otherBody;
-            let colliding = bodyToMove.colliding(bodyToReference);
+            const bodyToMove = this.fixed ? otherBody : this;
+            const bodyToReference = this.fixed ? this : otherBody;
+            const colliding = bodyToMove.colliding(bodyToReference);
             if (!!colliding && this.fixed && otherBody.fixed) continue;
 
             switch (colliding) {
@@ -48,13 +48,16 @@ class RigidBody extends GameObject
         }
     }
 
-    destroy()
+    public destroy(): void
     {
         super.destroy();
 
-        let index = RigidBody.instances.indexOf(this);
-        if (index >= 0) RigidBody.instances.splice(index, 1);
+        const index = RigidBody.instances.indexOf(this);
+        if (index >= 0) RigidBody._instances.splice(index, 1);
+    }
+
+    public static get instances(): readonly RigidBody[]
+    {
+        return RigidBody._instances;
     }
 }
-
-export default RigidBody;

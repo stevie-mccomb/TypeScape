@@ -1,8 +1,10 @@
-class Time
+export default class Time
 {
-    static delta: number = 0;
+    public static delta: number = 0;
+    public static lastUpdated: number = 0;
 
-    static lastUpdated: number = 0;
+    public static get deltaSeconds(): number
+    {
+        return Time.delta / 1000;
+    }
 }
-
-export default Time;

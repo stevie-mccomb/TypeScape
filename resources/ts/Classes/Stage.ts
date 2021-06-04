@@ -1,16 +1,16 @@
 import Game from 'Game';
 
-class Stage
+export default class Stage
 {
-    static instance: Stage;
+    private static _instance: Stage;
 
-    element: HTMLCanvasElement = document.createElement('canvas');
-    context: CanvasRenderingContext2D = this.element.getContext('2d');
+    private _element: HTMLCanvasElement = document.createElement('canvas');
+    private _context: CanvasRenderingContext2D = this.element.getContext('2d');
 
     constructor()
     {
-        if (Stage.instance) Stage.instance.destroy();
-        Stage.instance = this;
+        if (Stage._instance) Stage._instance.destroy();
+        Stage._instance = this;
 
         this.element.className = 'stage';
         this.element.textContent = 'Your platform is not supported.';
@@ -21,52 +21,65 @@ class Stage
         this.context.imageSmoothingEnabled = false;
     }
 
-    update()
+    public update(): void
     {
         //
     }
 
-    render()
+    public render(): void
     {
         this.context.clearRect(0, 0, this.width, this.height);
     }
 
-    destroy()
+    public destroy(): void
     {
         this.element.parentNode.removeChild(this.element);
 
-        Stage.instance = undefined;
+        Stage._instance = undefined;
     }
 
-    get width(): number
+    public get element(): HTMLCanvasElement
+    {
+        return this._element;
+    }
+
+    public get context(): CanvasRenderingContext2D
+    {
+        return this._context;
+    }
+
+    public get width(): number
     {
         return parseInt(this.element.getAttribute('width'));
     }
 
-    get height(): number
+    public get height(): number
     {
         return parseInt(this.element.getAttribute('height'));
     }
 
-    get top(): number
+    public get top(): number
     {
         return 0;
     }
 
-    get left(): number
+    public get left(): number
     {
         return 0;
     }
 
-    get bottom(): number
+    public get bottom(): number
     {
         return this.height;
     }
 
-    get right(): number
+    public get right(): number
     {
         return this.width;
     }
-}
 
-export default Stage;
+    public static get instance(): Stage
+    {
+        return Stage._instance;
+    }
+}

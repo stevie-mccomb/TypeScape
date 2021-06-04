@@ -1,19 +1,19 @@
 interface Listener
 {
-    event: String,
-    callback: Function
+    event: string;
+    callback: EventListener;
 }
 
-class EventBus
+export default class EventBus
 {
-    static listeners: Listener[] = [];
+    private static listeners: Listener[] = [];
 
-    static on(event: string, callback: Function = null)
+    public static on(event: string, callback: EventListener = null): void
     {
         EventBus.listeners.push({ event, callback });
     }
 
-    static off(event: string, callback: Function = null)
+    public static off(event: string, callback: EventListener = null): void
     {
         for (let i = EventBus.listeners.length - 1; i >= 0; --i) {
             if (event === EventBus.listeners[i].event) {
@@ -28,14 +28,12 @@ class EventBus
         }
     }
 
-    static dispatch(event, data: object = {})
+    public static dispatch(event: string, data: object = {}): void
     {
         for (let listener of EventBus.listeners) {
             if (listener.event === event) {
-                listener.callback(data);
+                listener.callback(data as Event);
             }
         }
     }
 }
-
-export default EventBus;

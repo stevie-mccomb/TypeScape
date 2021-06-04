@@ -2,21 +2,21 @@ const loaded: object = JSON.parse(localStorage.getItem('options')) || {};
 
 class Options
 {
-    static default: object = {
+    private static defaults: object = {
         deadzone: {
             x: 0.5,
             y: 0.5
         }
     };
 
-    static get(obj, prop): any
+    public static get(obj, prop): any
     {
         if (obj[prop]) return obj;
-        if (Options.default[prop]) return Options.default[prop];
+        if (Options.defaults[prop]) return Options.defaults[prop];
         return null;
     }
 
-    static set(obj, prop, value): boolean
+    public static set(obj, prop, value): boolean
     {
         try {
             obj.prop = value;

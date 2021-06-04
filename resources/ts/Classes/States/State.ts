@@ -1,37 +1,40 @@
-abstract class State
+export default abstract class State
 {
-    static instances: State[] = [];
+    private static _instances: State[] = [];
 
     constructor()
     {
-        State.instances.push(this);
+        State._instances.push(this);
     }
 
-    enter(data: object = {})
+    public enter(data: object = {}): void
     {
         //
     }
 
-    update()
+    public update(): void
     {
         //
     }
 
-    render()
+    public render(): void
     {
         //
     }
 
-    exit()
+    public exit(): void
     {
         //
     }
 
-    destroy()
+    public destroy(): void
     {
-        let index = State.instances.indexOf(this);
-        if (index >= 0) State.instances.splice(index, 1);
+        const index = State._instances.indexOf(this);
+        if (index >= 0) State._instances.splice(index, 1);
+    }
+
+    public static get instances(): readonly State[]
+    {
+        return State._instances;
     }
 }
-
-export default State;

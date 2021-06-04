@@ -36,7 +36,7 @@ enum GamepadMap
     DPAD_RIGHT = 15,
     SYSTEM = 16,
     PLAYSTATION = 16,
-    XBOX = 16,
+    XBOX = 16
 }
 
 export default GamepadMap;

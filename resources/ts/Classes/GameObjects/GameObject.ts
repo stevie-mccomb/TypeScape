@@ -1,10 +1,10 @@
 import RigidBody from 'GameObjects/RigidBody';
 import Sprite from 'Abstracts/Sprite';
-import Vector from 'Interfaces/Vector';
+import Vector from 'Abstracts/Vector';
 
-abstract class GameObject
+export default abstract class GameObject
 {
-    static instances: GameObject[] = [];
+    protected static _instances: GameObject[] = [];
 
     public x: number = 0;
     public y: number = 0;
@@ -16,7 +16,7 @@ abstract class GameObject
 
     constructor(x: number = 0, y: number = 0, width: number = 0, height: number = 0)
     {
-        GameObject.instances.push(this);
+        GameObject._instances.push(this);
 
         this.x = x;
         this.y = y;
@@ -24,12 +24,12 @@ abstract class GameObject
         this.height = height;
     }
 
-    update()
+    public update(): void
     {
         //
     }
 
-    render()
+    public render(): void
     {
         if (this.sprite) {
             this.sprite.update();
@@ -37,21 +37,20 @@ abstract class GameObject
         }
     }
 
-    destroy()
+    public destroy(): void
     {
-        let index = GameObject.instances.indexOf(this);
-
-        if (index >= 0) GameObject.instances.splice(index, 1);
+        const index = GameObject.instances.indexOf(this);
+        if (index >= 0) GameObject._instances.splice(index, 1);
     }
 
-    interact()
+    public interact(): void
     {
         //
     }
 
-    colliding(other: GameObject): string
+    public colliding(other: GameObject): string
     {
-        let colliding: boolean = (
+        const colliding: boolean = (
             this.top < other.bottom
                 &&
             this.left < other.right
@@ -62,14 +61,14 @@ abstract class GameObject
         );
 
         if (colliding) {
-            let diffs = {
+            const diffs = {
                 top: Math.abs(this.top - other.bottom),
                 left: Math.abs(this.left - other.right),
                 bottom: Math.abs(this.bottom - other.top),
                 right: Math.abs(this.right - other.left)
             };
 
-            let shallowest = Math.min(diffs.top, diffs.left, diffs.bottom, diffs.right);
+            const shallowest = Math.min(diffs.top, diffs.left, diffs.bottom, diffs.right);
 
             if (shallowest === diffs.top) return 'top';
             if (shallowest === diffs.left) return 'left';
@@ -80,22 +79,22 @@ abstract class GameObject
         return '';
     }
 
-    onClick(e)
+    public onClick(e): void
     {
         //
     }
 
-    onMousedown(e)
+    public onMousedown(e): void
     {
         //
     }
 
-    onMouseup(e)
+    public onMouseup(e): void
     {
         //
     }
 
-    isUnder(vector: Vector): boolean
+    public isUnder(vector: Vector): boolean
     {
         return (
             vector.x >= this.left
@@ -108,128 +107,124 @@ abstract class GameObject
         );
     }
 
-    get width(): number
+    public get width(): number
     {
         if (this.sprite && this.sprite.width) return this.sprite.width;
 
         return this._width;
     }
 
-    get height(): number
+    public get height(): number
     {
         if (this.sprite && this.sprite.height) return this.sprite.height;
 
         return this._height;
     }
 
-    get top(): number
+    public get top(): number
     {
         return this.y;
     }
 
-    get left(): number
+    public get left(): number
     {
         return this.x;
     }
 
-    get bottom(): number
+    public get bottom(): number
     {
         return this.top + this.height;
     }
 
-    get right(): number
+    public get right(): number
     {
         return this.left + this.width;
     }
 
-    get center(): Vector
+    public get center(): Vector
     {
-        return {
-            x: this.left + (this.width / 2),
-            y: this.top + (this.height / 2)
-        };
+        const x = this.left + (this.width / 2);
+        const y = this.top + (this.height / 2);
+        return new Vector(x, y);
     }
 
-    get centerX(): number
+    public get centerX(): number
     {
         return this.center.x;
     }
 
-    get centerY(): number
+    public get centerY(): number
     {
         return this.center.y;
     }
 
-    get interactable(): boolean
+    public get interactable(): boolean
     {
         return this._interactable;
     }
 
-    get interactableRange(): number
+    public get interactableRange(): number
     {
         return (this.height / 2) + 1;
     }
 
-    set width(value: number)
+    public set width(value: number)
     {
         this._width = value;
     }
 
-    set height(value: number)
+    public set height(value: number)
     {
         this._height = value;
     }
 
-    set top(value: number)
+    public set top(value: number)
     {
         this.y = value;
     }
 
-    set left(value: number)
+    public set left(value: number)
     {
         this.x = value;
     }
 
-    set bottom(value: number)
+    public set bottom(value: number)
     {
         this.y = value - this.height;
     }
 
-    set right(value: number)
+    public set right(value: number)
     {
         this.x = value - this.width;
     }
 
-    set center(pos: Vector)
+    public set center(pos: Vector)
     {
         this.x = pos.x - (this.width / 2);
         this.y = pos.y - (this.height / 2);
     }
 
-    set centerX(value: number)
+    public set centerX(value: number)
     {
         this.x = value - (this.width / 2);
     }
 
-    set centerY(value: number)
+    public set centerY(value: number)
     {
         this.y = value - (this.height / 2);
     }
 
-    get vector(): Vector
+    public get vector(): Vector
     {
-        return {
-            x: this.x,
-            y: this.y
-        };
+        return new Vector(this.x, this.y);
     }
 
-    static atVector(vector: Vector, not: GameObject[] = null): GameObject
+    public static atVector(vector: Vector, not: GameObject[] = null): GameObject
     {
         GameObject.sortByZ();
 
         for (let i = GameObject.instances.length - 1; i >= 0; --i) {
-            let instance = GameObject.instances[i];
+            const instance = GameObject.instances[i];
             if (not.indexOf(instance) >= 0) continue;
             if (vector.x >= instance.left && vector.x <= instance.right && vector.y >= instance.top && vector.y <= instance.bottom) {
                 return instance;
@@ -239,7 +234,7 @@ abstract class GameObject
         return null;
     }
 
-    static get highest(): GameObject
+    public static get highest(): GameObject
     {
         let highest = {z: 0} as GameObject;
         for (let gameObject of GameObject.instances) {
@@ -248,10 +243,13 @@ abstract class GameObject
         return highest;
     }
 
-    static sortByZ(): GameObject[]
+    public static sortByZ(): GameObject[]
     {
-        return GameObject.instances.sort((a, b) => a.z - b.z);
+        return GameObject._instances.sort((a, b) => a.z - b.z);
+    }
+
+    public static get instances(): readonly GameObject[]
+    {
+        return GameObject._instances;
     }
 }
-
-export default GameObject;

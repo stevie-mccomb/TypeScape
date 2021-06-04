@@ -4,6 +4,6 @@ enum Direction
     left = 'left',
     down = 'down',
     right = 'right'
-}
+};
 
 export default Direction;

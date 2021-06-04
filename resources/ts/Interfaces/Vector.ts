@@ -1,7 +1,5 @@
-interface Vector
+export default interface Vector
 {
     x: number;
-    y: number
+    y: number;
 }
-
-export default Vector;

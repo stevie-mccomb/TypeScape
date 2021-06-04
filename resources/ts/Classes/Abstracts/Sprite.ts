@@ -2,7 +2,7 @@ import GameObject from 'GameObjects/GameObject';
 import { Animation, Config, Frame } from 'Interfaces/SpriteConfig';
 import Stage from 'Stage';
 
-class Sprite
+export default class Sprite
 {
     private owner: GameObject;
     private config: Config;
@@ -21,7 +21,7 @@ class Sprite
         this.image.src = this.config.src;
     }
 
-    update()
+    public update(): void
     {
         ++this.frameTicks;
 
@@ -31,7 +31,7 @@ class Sprite
         }
     }
 
-    render()
+    public render(): void
     {
         Stage.instance.context.drawImage(
             this.image,
@@ -46,7 +46,7 @@ class Sprite
         );
     }
 
-    get width(): number
+    public get width(): number
     {
         if (this.frame && this.frame.width) return this.frame.width;
         if (this.animation && this.animation.width) return this.animation.width;
@@ -55,7 +55,7 @@ class Sprite
         return 0;
     }
 
-    get height(): number
+    public get height(): number
     {
         if (this.frame && this.frame.height) return this.frame.height;
         if (this.animation && this.animation.height) return this.animation.height;
@@ -64,7 +64,7 @@ class Sprite
         return 0;
     }
 
-    get animation(): Animation
+    public get animation(): Animation
     {
         let animation = this.config.animations[this._animationName];
 
@@ -73,17 +73,17 @@ class Sprite
         return animation;
     }
 
-    set animation(animation: Animation)
+    public set animation(animation: Animation)
     {
         this._animation = animation;
     }
 
-    get animationName()
+    public get animationName(): string
     {
         return this._animationName;
     }
 
-    set animationName(name: string)
+    public set animationName(name: string)
     {
         if (this.animationName !== name) {
             this.frameIndex = 0;
@@ -92,7 +92,7 @@ class Sprite
         }
     }
 
-    get frame(): Frame
+    public get frame(): Frame
     {
         if (!this.animation) return null;
         let frame = this.animation.frames[this.frameIndex];
@@ -101,11 +101,9 @@ class Sprite
         return frame;
     }
 
-    get frameRate(): number
+    public get frameRate(): number
     {
         if (this.animation && this.animation.frame_rate) return this.animation.frame_rate;
         if (this.config && this.config.frame_rate) return this.config.frame_rate;
     }
 }
-
-export default Sprite;

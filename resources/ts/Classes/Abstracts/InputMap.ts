@@ -2,7 +2,7 @@ const loaded: object = JSON.parse(localStorage.getItem('input-map')) || {};
 
 class InputMap
 {
-    static default: object = {
+    private static defaults: object = {
         'action': 32,
         'move_up': 87,
         'move_left': 65,
@@ -10,14 +10,14 @@ class InputMap
         'move_right': 68,
     };
 
-    static get(obj: object, prop: string): number
+    public static get(obj: object, prop: string): number
     {
         if (!!obj[prop]) return parseInt(obj[prop]);
-        if (!!InputMap.default[prop]) return parseInt(InputMap.default[prop]);
+        if (!!InputMap.defaults[prop]) return parseInt(InputMap.defaults[prop]);
         return 0;
     }
 
-    static set(obj: object, prop: string, value: number): boolean
+    public static set(obj: object, prop: string, value: number): boolean
     {
         try {
             obj[prop] = value;
