@@ -1,7 +1,7 @@
-import { Mouse, MouseButton } from 'Interfaces/Mouse';
-import GameObject from 'GameObjects/GameObject';
-import Stage from 'Stage';
-import Vector from 'Abstracts/Vector';
+import { Mouse } from '@/Interfaces/Mouse';
+import GameObject from '@/Classes/GameObjects/GameObject';
+import Stage from '@/Classes/Stage';
+import Vector from '@/Classes/Abstracts/Vector';
 
 export default class Controller
 {
@@ -115,7 +115,6 @@ export default class Controller
         const gamepads = navigator.getGamepads();
         if (!gamepads || !gamepads.length || !gamepads[0]) return;
 
-        // @ts-ignore: GamepadActuator is not recognized by the typescript interpreter, but works in Chrome, which is the only intended build platform.
         navigator.getGamepads()[0].vibrationActuator.playEffect('dual-rumble', options);
     }
 

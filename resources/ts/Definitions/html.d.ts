@@ -1,4 +1,4 @@
 declare module '*.html' {
-    const value: string,
+    const value: string;
     export default value;
 }

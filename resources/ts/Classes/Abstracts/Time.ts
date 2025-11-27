@@ -2,6 +2,7 @@ export default class Time
 {
     public static delta: number = 0;
     public static lastUpdated: number = 0;
+    public static scale: number = 1.0;
 
     public static get deltaSeconds(): number
     {

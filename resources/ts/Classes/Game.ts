@@ -1,7 +1,7 @@
-import Controller from 'Abstracts/Controller';
-import MasterMachine from 'Machines/MasterMachine';
-import Stage from 'Stage';
-import Time from 'Abstracts/Time';
+import Controller from '@/Classes/Abstracts/Controller';
+import MasterMachine from '@/Classes/Machines/MasterMachine';
+import Stage from '@/Classes/Stage';
+import Time from '@/Classes/Abstracts/Time';
 
 export default class Game
 {

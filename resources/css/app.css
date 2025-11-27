@@ -1,19 +1,15 @@
-@import 'master/reset';
-
-html, body
-{
+html, body {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #000;
+    background-color: #282828;
     color: white;
     font-family: 'Open Sans', sans-serif;
 }
 
-.game
-{
+.game {
     position: absolute;
     width: 177.77vh;
     height: 100vh;
@@ -29,23 +25,22 @@ html, body
     }
 }
 
-canvas.stage
-{
+canvas.stage {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background: black;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 15%), 0 10px 15px -5px rgb(0 0 0 / 25%);
 }
 
-.ui
-{
+.ui {
     position: fixed;
     z-index: 10;
 }
 
-.shade
-{
+.shade {
     top: 0;
     right: 0;
     bottom: 0;

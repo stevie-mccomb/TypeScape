@@ -1,6 +1,5 @@
-import RigidBody from 'GameObjects/RigidBody';
-import Sprite from 'Abstracts/Sprite';
-import Vector from 'Abstracts/Vector';
+import Sprite from '@/Classes/Abstracts/Sprite';
+import Vector from '@/Classes/Abstracts/Vector';
 
 export default abstract class GameObject
 {

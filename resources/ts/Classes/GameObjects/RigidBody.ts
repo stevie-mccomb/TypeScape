@@ -1,4 +1,4 @@
-import GameObject from 'GameObjects/GameObject';
+import GameObject from '@/Classes/GameObjects/GameObject';
 
 export default class RigidBody extends GameObject
 {

@@ -1,4 +1,4 @@
-import State from 'States/State';
+import State from '@/Classes/States/State';
 
 export default class StateMachine
 {

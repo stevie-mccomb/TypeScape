@@ -1,4 +1,4 @@
-import Game from 'Game';
+import Game from '@/Classes/Game';
 
 export default class Stage
 {

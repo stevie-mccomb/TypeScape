@@ -1,6 +1,6 @@
-import GameObject from 'GameObjects/GameObject';
-import { Animation, Config, Frame } from 'Interfaces/SpriteConfig';
-import Stage from 'Stage';
+import GameObject from '@/Classes/GameObjects/GameObject';
+import { Animation, Config, Frame } from '@/Interfaces/SpriteConfig';
+import Stage from '@/Classes/Stage';
 
 export default class Sprite
 {

@@ -1,5 +1,5 @@
-import PlayState from 'States/PlayState';
-import StateMachine from 'Machines/StateMachine';
+import PlayState from '@/Classes/States/PlayState';
+import StateMachine from '@/Classes/Machines/StateMachine';
 
 export default class MasterMachine extends StateMachine
 {

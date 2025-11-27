@@ -1,11 +1,16 @@
 {
     "compilerOptions": {
-        "module": "es6",
+        "module": "nodenext",
         "target": "es5",
-        "outDir": "./resources/js"
+        "moduleResolution": "nodenext",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [ "./resources/ts/*" ],
+        }
     },
     "include": [
         "./resources/ts/**/*.ts",
         "./resources/ts/**/*.tsx",
-    ]
+        "./resources/ts/**/*.js",
+    ],
 }

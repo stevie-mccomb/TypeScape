@@ -1,6 +1,6 @@
-import State from 'States/State';
-import GameObject from 'GameObjects/GameObject';
-import StateMachine from 'Machines/StateMachine';
+import GameObject from '@/Classes/GameObjects/GameObject';
+import State from '@/Classes/States/State';
+import StateMachine from '@/Classes/Machines/StateMachine';
 
 export default class PlayState extends State
 {
