@@ -224,7 +224,7 @@ export default class EnemySpawner extends GameObject
 {
     private secondsSinceLastSpawn: number = 0.0;
     private nextSpawnAt: number = 0.0;
-    private minSpawnTime: number = 1.0;
+    private minSpawnTime: number = 0.5;
     private maxSpawnTime: number = 3.0;
 
     constructor()
@@ -249,7 +249,6 @@ export default class EnemySpawner extends GameObject
         this.nextSpawnAt = Math.random() * (this.maxSpawnTime - this.minSpawnTime) + this.minSpawnTime;
     }
 }
-
 ```
 
 ```ts
@@ -268,5 +267,8 @@ export default class PlayState extends State
 
     // ...
 }
-
 ```
+
+We now have enemies being spawned at random intervals that move toward the bottom of the screen:
+
+![Enemy Ships](https://github.com/stevie-mccomb/TypeScape/blob/0f12e5bbc54914c4c81b578f56101f2e10d31576/readme/enemies.png)
