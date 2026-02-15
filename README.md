@@ -11,7 +11,7 @@ TypeScape is a simple browser-based 2D game engine written in [TypeScript](https
 
 ## Quick-start
 
-If you already understand how game engines work, TypeScape should be easy to pick up. To get started, just create some new `GameObject` files under `/resources/ts/Classes/GameObjects/` and make custom classes that extend the built-in `GameObject` class. The engine is not hidden away in a separate "vendor" folder, so you're free to edit the core engine files as you work to make the engine's functionality suit your game. Feel free to dig around all of the `.ts` files located under `/resources/ts` to understand the engine's inner workings.
+If you already understand how game engines work, TypeScape should be easy to pick up. To get started, just create some new `GameObject` files under `/resources/ts/Classes/GameObjects/` and make custom classes that extend the built-in `GameObject` class. Then, instantiate those `GameObject` classes inside of the `/resources/ts/Classes/Game.ts` file's constructor. The `Game` class will then handle the built-in `update` and `render` functions of those `GameObject` instances. The engine is not hidden away in a separate "vendor" folder, so you're free to edit the core engine files as you work to make the engine's functionality suit your game. Feel free to dig around all of the `.ts` files located under `/resources/ts` to understand the engine's inner workings.
 
 ## Sample Project
 
