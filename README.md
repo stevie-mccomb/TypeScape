@@ -272,3 +272,97 @@ export default class PlayState extends State
 We now have enemies being spawned at random intervals that move toward the bottom of the screen:
 
 ![Enemy Ships](https://github.com/stevie-mccomb/TypeScape/blob/0f12e5bbc54914c4c81b578f56101f2e10d31576/readme/enemies.png)
+
+Next, let's add a way of tracking all of our enemies so we can loop through them, and add some collision logic to our player so they can collide with the enemy ships and take damage:
+
+```ts
+// /resources/ts/Classes/GameObjects/EnemyShip.ts
+
+export default class EnemyShip extends GameObject
+{
+    static enemies: EnemyShip[] = []; // A "multiton" array for tracking all of our living enemies.
+
+    constructor()
+    {
+        super();
+
+        EnemyShip.enemies.push(this); // Add our newly spawned ship to the "multiton" array.
+
+        // ...
+    }
+
+    // A custom destroy function that will allow us to remove enemies from their "multiton" array when destroyed.
+    destroy()
+    {
+        super.destroy();
+
+        const index: number = EnemyShip.enemies.indexOf(this);
+        if (index >= 0) {
+            EnemyShip.enemies.splice(index, 1);
+        }
+    }
+}
+```
+
+```ts
+// /resources/ts/Classes/GameObjects/PlayerShip.ts
+
+import EnemyShip from '@/Classes/GameObjects/EnemyShip';
+
+export default class PlayerShip extends GameObject
+{
+    private health: number = 3; // Track our health; we can take 3 hits before a game over.
+    private isRecovering: boolean = false; // Whether we're currently "recovering" and cannot be hit again.
+    private secondsSinceHurt: number = 0.0; // Time since our last enemy collision.
+    private recoveryDuration: number = 2.0; // How long we are invulnerable for after getting hit.
+
+    // ...
+
+    update()
+    {
+        if (this.isRecovering) {
+            this.secondsSinceHurt += Time.deltaSeconds;
+            if (this.secondsSinceHurt >= this.recoveryDuration) {
+                this.isRecovering = false;
+            }
+        }
+
+        // ...
+
+        if (!this.isRecovering) {
+            for (const enemy of EnemyShip.enemies) {
+                if (this.colliding(enemy)) {
+                    this.takeDamage();
+                    break;
+                }
+            }
+        }
+    }
+
+    public beforeRender(): void
+    {
+        if (this.isRecovering) Stage.instance.context.globalAlpha = 0.25; // Will make the player translucent after taking damage.
+    }
+
+    public afterRender(): void
+    {
+        if (this.isRecovering) Stage.instance.context.globalAlpha = 1.00; // Will restore the Stage's transparency so other objects can be drawn fully opaque again.
+    }
+
+    private takeDamage(): void
+    {
+        if (this.isRecovering) return;
+        this.isRecovering = true;
+
+        this.secondsSinceHurt = 0.0;
+        --this.health;
+
+        if (this.health <= 0) {
+            alert('Game Over!');
+            window.location.reload();
+        }
+    }
+}
+```
+
+Now we almost have a fully functional game! We can now control our ship and dodge the enemies and we have a "game over" state if we get hit three times.
