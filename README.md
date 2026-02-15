@@ -121,7 +121,8 @@ export default class PlayerShip extends GameObject
     {
         // ...
 
-        this.bottom = Stage.instance.bottom - 32; // Position the ship at the bottom of the `Stage` when it spawns.
+        this.bottom = Stage.instance.bottom - 32; // Vertically position the ship at the bottom of the `Stage`.
+        this.centerX = Stage.instance.width * 0.5; // Horizontally position the ship in the center of the `Stage`.
     }
 
     /**
@@ -149,4 +150,123 @@ export default class PlayerShip extends GameObject
 }
 ```
 
-We can now control our ship by moving left and right with the "A" and "D" keys, respectively.
+We can now control our ship by moving left and right with the "A" and "D" keys, respectively. Next up, let's make an `EnemyShip` class and an `EnemySpawner` class that will regularly spawn `EnemyShip` instances on a randomized interval:
+
+```ts
+// /resources/ts/Sprites/EnemyShipSprite.ts
+
+import SpriteConfig from '@/Interfaces/SpriteConfig';
+
+const config: SpriteConfig = {
+    "src": "/img/sprites/enemy-ship.png", // Update this with your enemy ship's sprite filepath.
+
+    "width": 64,
+    "height": 64,
+
+    "animations": {
+        "idle": {
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    }
+};
+
+export default config;
+```
+
+```ts
+// /resources/ts/Classes/GameObjects/EnemyShip.ts
+
+import GameObject from '@/Classes/GameObjects/GameObject';
+import EnemyShipSprite from '@/Sprites/EnemyShipSprite';
+import Sprite from '@/Classes/Abstracts/Sprite';
+import Time from '@/Classes/Abstracts/Time';
+import Stage from '@/Classes/Stage';
+
+export default class EnemyShip extends GameObject
+{
+    private speed: number = 240.0; // Make the EnemyShip slightly slower than the PlayerShip so the player can dodge it.
+
+    constructor()
+    {
+        super();
+        
+        this.sprite = new Sprite(this, EnemyShipSprite);
+
+        this.left = Math.floor(Math.random() * (Stage.instance.width - this.width)); // Horizontally position the EnemyShip at a random X position on the stage.
+        this.bottom = Stage.instance.top; // Vertically position the EnemyShip just off the top of the screen.
+    }
+
+    update()
+    {
+        this.y += this.speed * Time.deltaSeconds; // Move downward.
+
+        // If the EnemyShip has gone off the screen, destroy it to free up memory.
+        if (this.top > Stage.instance.bottom) {
+            this.destroy();
+        }
+    }
+}
+```
+
+```ts
+// /resources/ts/Classes/GameObjects/EnemySpawner.ts
+
+import Time from '@/Classes/Abstracts/Time';
+import EnemyShip from '@/Classes/GameObjects/EnemyShip';
+import GameObject from '@/Classes/GameObjects/GameObject';
+
+export default class EnemySpawner extends GameObject
+{
+    private secondsSinceLastSpawn: number = 0.0;
+    private nextSpawnAt: number = 0.0;
+    private minSpawnTime: number = 1.0;
+    private maxSpawnTime: number = 3.0;
+
+    constructor()
+    {
+        super();
+
+        this.spawn();
+    }
+
+    update()
+    {
+        this.secondsSinceLastSpawn += Time.deltaSeconds;
+        if (this.secondsSinceLastSpawn >= this.nextSpawnAt) {
+            this.spawn();
+        }
+    }
+
+    private spawn()
+    {
+        new EnemyShip();
+        this.secondsSinceLastSpawn = 0.0;
+        this.nextSpawnAt = Math.random() * (this.maxSpawnTime - this.minSpawnTime) + this.minSpawnTime;
+    }
+}
+
+```
+
+```ts
+// ...
+import EnemySpawner from '@/Classes/GameObjects/EnemySpawner'; // Import the new EnemySpawner class.
+
+export default class PlayState extends State
+{
+    // ...
+
+    public enter(data: object = {}): void
+    {
+        new PlayerShip();   
+        new EnemySpawner(); // Create an instance of the new EnemySpawner class.
+    }
+
+    // ...
+}
+
+```
