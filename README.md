@@ -102,3 +102,51 @@ export default class PlayerShip extends GameObject
 You should now see your player's space ship on the screen when loading up the game:
 
 ![Player Ship](https://github.com/stevie-mccomb/TypeScape/blob/90b57c3291da142b323ddb1c465bde0099997679/readme/player-ship.png)
+
+Now, let's use TypeScape's built-in `Controller` to handle user input so we can move the ship left and right:
+
+```ts
+// /resources/ts/Classes/GameObjects/PlayerShip.ts
+
+// ...
+import Controller from '@/Classes/Abstracts/Controller';
+import Time from '@/Classes/Abstracts/Time';
+import Stage from '@/Classes/Stage';
+
+export default class PlayerShip extends GameObject
+{
+    private speed: number = 320.0; // Add a variable for tracking the ship's speed.
+
+    constructor()
+    {
+        // ...
+
+        this.bottom = Stage.instance.bottom - 32; // Position the ship at the bottom of the `Stage` when it spawns.
+    }
+
+    /**
+     * Add an "update" method that will run each frame.
+     * We will check for input, move the ship, and keep it within the bounds of the `Stage` so it doesn't fly off the screen.
+     */
+    update()
+    {
+        if (Controller.instance.keyIsDown(65)) { // "A" key
+            this.x -= this.speed * Time.deltaSeconds;
+        }
+        
+        if (Controller.instance.keyIsDown(68)) { // "D" key
+            this.x += this.speed * Time.deltaSeconds;
+        }
+
+        if (this.left < Stage.instance.left) {
+            this.left = Stage.instance.left;
+        }
+
+        if (this.right > Stage.instance.right) {
+            this.right = Stage.instance.right;
+        }
+    }
+}
+```
+
+We can now control our ship by moving left and right with the "A" and "D" keys, respectively.
