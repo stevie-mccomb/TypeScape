@@ -21,4 +21,15 @@ The engine is not hidden away in a separate "vendor" folder, so you're free to e
 
 ## Sample Project
 
-To get a better understanding of how to use TypeScape, follow along with this simple tutorial to create your first TypeScape project.
+To get a better understanding of how to use TypeScape, follow along with this simple tutorial to create your first TypeScape project. We're going to make a space-themed [shmup](https://en.wikipedia.org/wiki/Shoot_%27em_up) game. First, let's create a new class for our player character's ship:
+
+```ts
+// /resources/ts/Classes/GameObjects/PlayerShip.ts
+
+import GameObject from '@/Classes/GameObjects/GameObject';
+
+export default class PlayerShip extends GameObject
+{
+  //
+}
+```
