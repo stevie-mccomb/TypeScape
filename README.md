@@ -83,6 +83,7 @@ export default config;
 ```
 
 ```ts
+// ...
 import PlayerShipSprite from '@/Sprites/PlayerShipSprite'; // Import your PlayerShip's SpriteConfig
 
 export default class PlayerShip extends GameObject
@@ -93,6 +94,11 @@ export default class PlayerShip extends GameObject
         
         this.sprite = new Sprite(this, PlayerShipSprite); // Create a constructor and assign the PlayerShip's sprite to a new sprite using your custom config.
     }
-}
 
+    // ...
+}
 ```
+
+You should now see your player's space ship on the screen when loading up the game:
+
+![Player Ship](https://github.com/stevie-mccomb/TypeScape/blob/90b57c3291da142b323ddb1c465bde0099997679/readme/player-ship.png)
