@@ -21,7 +21,9 @@ The engine is not hidden away in a separate "vendor" folder, so you're free to e
 
 ## Sample Project
 
-To get a better understanding of how to use TypeScape, follow along with this simple tutorial to create your first TypeScape project. We're going to make a space-themed [shmup](https://en.wikipedia.org/wiki/Shoot_%27em_up) game. First, let's create a new class for our player character's ship:
+To get a better understanding of how to use TypeScape, follow along with this simple tutorial to create your first TypeScape project. We're going to make a space-themed [shmup](https://en.wikipedia.org/wiki/Shoot_%27em_up) game.
+
+First, let's create a new class for our player character's ship and create a new instance of that class in our global `PlayState`:
 
 ```ts
 // /resources/ts/Classes/GameObjects/PlayerShip.ts
@@ -32,4 +34,65 @@ export default class PlayerShip extends GameObject
 {
   //
 }
+```
+
+```ts
+// /resources/ts/Classes/States/PlayState.ts
+// ...
+import PlayerShip from '@/Classes/GameObjects/PlayerShip'; // Import the PlayerShip class
+
+export default class PlayState extends State
+{
+    // ...
+
+    public enter(data: object = {}): void
+    {
+        new PlayerShip(); // Add this line here to create a new instance of our PlayerShip when the game enters the `PlayState`.
+    }
+
+    // ...
+}
+
+```
+
+Next, let's give our player ship a visual representation using a `Sprite` so we can see it on the screen:
+
+```ts
+// /resources/ts/Sprites/PlayerShipSprite.ts
+import SpriteConfig from '@/Interfaces/SpriteConfig';
+
+const config: SpriteConfig = {
+    "src": "/img/sprites/player-ship.png", // Swap out the path to your own static image asset.
+
+    "width": 64, // Set the width of a single frame.
+    "height": 64, // Set the height of a single frame.
+
+    "animations": {
+        "idle": {
+            "frames": [ // If you have multiple animation frames, just add each frame to this array.
+                {
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    }
+};
+
+export default config;
+```
+
+```ts
+import PlayerShipSprite from '@/Sprites/PlayerShipSprite'; // Import your PlayerShip's SpriteConfig
+
+export default class PlayerShip extends GameObject
+{
+    constructor()
+    {
+        super();
+        
+        this.sprite = new Sprite(this, PlayerShipSprite); // Create a constructor and assign the PlayerShip's sprite to a new sprite using your custom config.
+    }
+}
+
 ```
