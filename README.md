@@ -365,4 +365,139 @@ export default class PlayerShip extends GameObject
 }
 ```
 
-Now we almost have a fully functional game! We can now control our ship and dodge the enemies and we have a "game over" state if we get hit three times.
+Now we almost have a fully functional game! We can now control our ship and dodge the enemies and we have a "game over" state if we get hit three times. The only thing left to add to make it a proper shooter is the ability to shoot, so let's add that now:
+
+```ts
+// /resources/ts/Classes/Sprites/ProjectileSprite.ts
+
+import SpriteConfig from '@/Interfaces/SpriteConfig';
+
+const config: SpriteConfig = {
+    "src": "/img/sprites/projectile.png", // Swap this out for your static image asset.
+
+    "width": 64,
+    "height": 64,
+
+    "animations": {
+        "idle": {
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0
+                }
+            ]
+        }
+    }
+};
+
+export default config;
+```
+
+```ts
+// /resources/ts/Classes/GameObjects/Projectile.ts
+
+import Sprite from '@/Classes/Abstracts/Sprite';
+import Time from '@/Classes/Abstracts/Time';
+import EnemyShip from '@/Classes/GameObjects/EnemyShip';
+import GameObject from '@/Classes/GameObjects/GameObject';
+import Stage from '@/Classes/Stage';
+import ProjectileSprite from '@/Sprites/ProjectileSprite';
+
+export default class Projectile extends GameObject
+{
+    static projectiles: Projectile[] = [];
+
+    private speed: number = 640.0;
+
+    constructor(x: number, y: number)
+    {
+        super(x, y);
+
+        Projectile.projectiles.push(this);
+
+        this.sprite = new Sprite(this, ProjectileSprite);
+    }
+
+    update()
+    {
+        this.y -= this.speed * Time.deltaSeconds;
+
+        if (this.bottom < Stage.instance.top) {
+            this.destroy();
+        }
+
+        for (const enemy of EnemyShip.enemies) {
+            if (this.colliding(enemy)) {
+                enemy.destroy();
+                this.destroy();
+                break;
+            }
+        }
+    }
+
+    destroy()
+    {
+        super.destroy();
+
+        const index: number = Projectile.projectiles.indexOf(this);
+        if (index >= 0) {
+            Projectile.projectiles.splice(index, 1);
+        }
+    }
+}
+```
+
+```ts
+// /resources/ts/Classes/GameObjects/PlayerShip.ts
+
+// ...
+import Projectile from '@/Classes/GameObjects/Projectile';
+
+export default class PlayerShip extends GameObject
+{
+    private fireRate: number = 2.0; // projectiles per second
+    private fireCooldown: number = 0.0;
+
+    // ...
+
+    update()
+    {
+        // ...
+
+        if (this.fireCooldown > 0.0) {
+            this.fireCooldown -= Time.deltaSeconds;
+            this.fireCooldown = this.fireCooldown.clamp(0.0, 1.0 / this.fireRate);
+        }
+
+        if (Controller.instance.keyIsDown(32)) { // space key
+            this.fire();
+        }
+
+        // ...
+    }
+
+    // ...
+
+    private fire(): void
+    {
+        if (!this.canFire) return;
+
+        this.fireCooldown = 1.0 / this.fireRate;
+
+        new Projectile(this.centerX - 32, this.top - 32);
+    }
+
+    private get canFire(): boolean
+    {
+        return this.fireCooldown <= 0.0;
+    }
+}
+```
+
+And voila! We now have projectiles that can destroy enemies:
+
+![Projectiles](https://github.com/stevie-mccomb/TypeScape/blob/e551e119a4930a6c8232f8c23d9aa9d8a522bf53/readme/projectiles.png)
+
+As a next step, try balancing the game by adjusting your player's fire rate, the enemy spawn time, and the size of your assets (ships and projectiles both). If you're feeling adventurous, try adding a new class for tracking your score that goes up by one whenever you destroy an enemy ship.
+
+Congrats! You've made your first TypeScape game.
